@@ -1,1 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>居家特調酒單 - 200ml 專屬配方</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .active-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3);
+            border-color: #fbbf24 !important;
+            transform: translateY(-2px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-martini-glass-citrus text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-amber-400 tracking-wide">居家特調 Bar Menu</h1>
+                    <p class="text-xs text-slate-400">客製化 200ml 精準比例調酒菜單</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 text-xs text-slate-300">
+                <i class="fa-solid fa-wine-bottle text-amber-400"></i>
+                <span>庫存基酒與配料：蘭姆酒、威士忌、君度橙酒、氣泡水、蔓越莓汁、魔爪能量飲、烏龍茶、茉莉花茶、可樂</span>
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4 pt-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Cocktail Buttons Grid -->
+        <section class="lg:col-span-5 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-amber-400"></i> 選擇調酒 (共 20 款)
+                </h2>
+                <span class="text-xs text-slate-500">點擊載入配方</span>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="flex flex-wrap gap-1.5 text-xs" id="filter-container">
+                <button onclick="filterCocktails('all')" class="filter-btn active bg-slate-800 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full">全部 (20)</button>
+                <button onclick="filterCocktails('rum')" class="filter-btn bg-slate-800 text-slate-400 border border-slate-700 hover:text-slate-200 px-3 py-1 rounded-full">蘭姆酒</button>
+                <button onclick="filterCocktails('whisky')" class="filter-btn bg-slate-800 text-slate-400 border border-slate-700 hover:text-slate-200 px-3 py-1 rounded-full">威士忌</button>
+                <button onclick="filterCocktails('cointreau')" class="filter-btn bg-slate-800 text-slate-400 border border-slate-700 hover:text-slate-200 px-3 py-1 rounded-full">君度橙酒</button>
+                <button onclick="filterCocktails('monster')" class="filter-btn bg-slate-800 text-slate-400 border border-slate-700 hover:text-slate-200 px-3 py-1 rounded-full">魔爪能量飲</button>
+            </div>
+
+            <!-- Cocktail Selection Buttons -->
+            <div class="grid grid-cols-1 gap-2.5" id="buttons-grid">
+                <!-- JS will dynamically populate buttons here -->
+            </div>
+        </section>
+
+        <!-- Right Column: Selected Recipe Details -->
+        <section class="lg:col-span-7">
+            <div id="recipe-card" class="glass-card rounded-2xl p-6 border border-slate-700/60 sticky top-24 shadow-2xl transition-all duration-300">
+                <!-- Recipe detail dynamically injected here -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Data structure for the 10 cocktails
+        const cocktails = [
+            {
+                id: 1,
+                name: "自由古巴",
+                enName: "Cuba Libre",
+                base: "rum",
+                tags: ["蘭姆酒", "可樂", "氣泡感"],
+                icon: "fa-cocktail",
+                color: "#eab308",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 50, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "可樂 (Coke)", amount: 150, color: "bg-stone-800", text: "text-amber-200" }
+                ],
+                flavor: "經典氣泡組合，可樂帶出蘭姆酒的甘蔗焦糖香。",
+                steps: [
+                    "在 250ml 以上高球杯中加滿冰塊。",
+                    "倒入 50 ml 蘭姆酒。",
+                    "補滿 150 ml 可樂。",
+                    "用提攪棒輕輕攪拌一次即可享用（適度加檸檬角風味更佳）。"
+                ]
+            },
+            {
+                id: 2,
+                name: "威士忌可樂",
+                enName: "Whisky & Coke",
+                base: "whisky",
+                tags: ["威士忌", "可樂", "經典"],
+                icon: "fa-whiskey-glass",
+                color: "#d97706",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 50, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "可樂 (Coke)", amount: 150, color: "bg-stone-800", text: "text-amber-200" }
+                ],
+                flavor: "順口甜潤，威士忌的橡木香氣能完美融進可樂。",
+                steps: [
+                    "杯中裝滿大顆冰塊。",
+                    "倒入 50 ml 威士忌。",
+                    "緩緩倒入 150 ml 可樂避免氣泡過度流失。",
+                    "輕揉攪拌均勻。"
+                ]
+            },
+            {
+                id: 3,
+                name: "威士忌烏龍 Highball",
+                enName: "Whisky Oolong Highball",
+                base: "whisky",
+                tags: ["威士忌", "烏龍茶", "氣泡水"],
+                icon: "fa-glass-water-droplet",
+                color: "#b45309",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 40, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "烏龍茶 (Oolong Tea)", amount: 110, color: "bg-emerald-800", text: "text-emerald-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 50, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "焙火茶香回甘兼具清涼氣泡感，解膩無負擔。",
+                steps: [
+                    "冰杯後倒入 40 ml 威士忌。",
+                    "倒入 110 ml 無糖烏龍茶混合酒體。",
+                    "最後沿杯壁加入 50 ml 氣泡水。",
+                    "上下輕提冰塊一次即可。"
+                ]
+            },
+            {
+                id: 4,
+                name: "茉莉蘭姆 Highball",
+                enName: "Jasmine Rum Highball",
+                base: "rum",
+                tags: ["蘭姆酒", "茉莉花茶", "氣泡水"],
+                icon: "fa-leaf",
+                color: "#10b981",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 40, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "茉莉花茶 (Jasmine Tea)", amount: 110, color: "bg-teal-700", text: "text-teal-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 50, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "淡雅茉莉花香襯托甘純酒體，酒感輕盈優雅。",
+                steps: [
+                    "高杯放入冰塊。",
+                    "倒入 40 ml 蘭姆酒及 110 ml 茉莉花茶。",
+                    "補上 50 ml 氣泡水增加清爽感。",
+                    "輕輕攪拌。"
+                ]
+            },
+            {
+                id: 5,
+                name: "君度蔓越莓氣泡酒",
+                enName: "Cointreau Cranberry Spritz",
+                base: "cointreau",
+                tags: ["君度橙酒", "蔓越莓汁", "氣泡水"],
+                icon: "fa-wine-glass",
+                color: "#f43f5e",
+                ingredients: [
+                    { name: "君度橙酒 (Cointreau)", amount: 40, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "蔓越莓汁 (Cranberry)", amount: 80, color: "bg-rose-700", text: "text-rose-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 80, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "莓果酸甜與橙皮香氣交織，冰涼爽口。",
+                steps: [
+                    "準備滿冰杯子。",
+                    "依序加入 40 ml 君度橙酒與 80 ml 蔓越莓汁。",
+                    "最後注入 80 ml 氣泡水點綴。",
+                    "攪拌均勻呈現粉紅美麗色澤。"
+                ]
+            },
+            {
+                id: 6,
+                name: "蔓越莓日落",
+                enName: "Cranberry Sunset",
+                base: "rum",
+                tags: ["蘭姆酒", "君度橙酒", "蔓越莓汁"],
+                icon: "fa-sun",
+                color: "#e11d48",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 40, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "君度橙酒 (Cointreau)", amount: 20, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "蔓越莓汁 (Cranberry)", amount: 140, color: "bg-rose-700", text: "text-rose-300" }
+                ],
+                flavor: "柑橘香氣點綴酸甜果汁，微醺度適中且色彩討喜。",
+                steps: [
+                    "將 40 ml 蘭姆酒與 20 ml 君度橙酒倒入有冰塊的杯中。",
+                    "注入 140 ml 蔓越莓汁。",
+                    "充分攪拌，享用濃郁果香與酒香的和諧。"
+                ]
+            },
+            {
+                id: 7,
+                name: "威士忌能量特調",
+                enName: "Whisky Red Bull",
+                base: "whisky",
+                tags: ["威士忌", "Red Bull", "提神"],
+                icon: "fa-bolt",
+                color: "#f59e0b",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 40, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "Red Bull", amount: 160, color: "bg-yellow-500", text: "text-yellow-200" }
+                ],
+                flavor: "能量飲料的獨特風味平衡了威士忌的酒勁，提神順口。",
+                steps: [
+                    "杯中加滿冰塊。",
+                    "倒入 40 ml 威士忌。",
+                    "倒入 160 ml Red Bull。",
+                    "輕微攪拌即可派對開喝！"
+                ]
+            },
+            {
+                id: 8,
+                name: "蘭姆紅牛",
+                enName: "Rum Red Bull",
+                base: "rum",
+                tags: ["蘭姆酒", "Red Bull", "派對"],
+                icon: "fa-fire",
+                color: "#ef4444",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 40, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "Red Bull", amount: 160, color: "bg-yellow-500", text: "text-yellow-200" }
+                ],
+                flavor: "充滿派對感，甜美氣泡與蘭姆酒酒香相得益彰。",
+                steps: [
+                    "杯中加滿冰塊。",
+                    "注入 40 ml 蘭姆酒。",
+                    "加入 160 ml Red Bull。",
+                    "輕鬆攪拌即可享用。"
+                ]
+            },
+            {
+                id: 9,
+                name: "橙香茉莉蘭姆酒",
+                enName: "Orange Jasmine Rum",
+                base: "cointreau",
+                tags: ["蘭姆酒", "君度橙酒", "茉莉花茶"],
+                icon: "fa-seedling",
+                color: "#34d399",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 30, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "君度橙酒 (Cointreau)", amount: 30, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "茉莉花茶 (Jasmine Tea)", amount: 140, color: "bg-teal-700", text: "text-teal-300" }
+                ],
+                flavor: "柑橘香與花茶韻味兼具，口感極為滑順。",
+                steps: [
+                    "杯中放入冰塊。",
+                    "加入 30 ml 蘭姆酒與 30 ml 君度橙酒。",
+                    "倒入 140 ml 茉莉花茶。",
+                    "充分攪拌，享受優雅香氣。"
+                ]
+            },
+            {
+                id: 10,
+                name: "君度威士忌烏龍茶",
+                enName: "Cointreau Whisky Oolong",
+                base: "whisky",
+                tags: ["威士忌", "君度橙酒", "烏龍茶"],
+                icon: "fa-mug-hot",
+                color: "#d97706",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 40, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "君度橙酒 (Cointreau)", amount: 20, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "烏龍茶 (Oolong Tea)", amount: 140, color: "bg-emerald-800", text: "text-emerald-300" }
+                ],
+                flavor: "沉穩的焙茶香帶有微微甜橙果香，層次豐富耐飲。",
+                steps: [
+                    "杯中加滿冰塊。",
+                    "倒入 40 ml 威士忌與 20 ml 君度橙酒。",
+                    "補滿 140 ml 烏龍茶。",
+                    "攪拌均勻，完美融入雙重香氣。"
+                ]
+            },
+            {
+                id: 11,
+                name: "魔爪狂暴威士忌",
+                enName: "Whisky Monster Highball",
+                base: "whisky",
+                tags: ["威士忌", "魔爪能量飲", "氣泡水"],
+                icon: "fa-bolt-lightning",
+                color: "#84cc16",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 40, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "魔爪能量飲 (Monster)", amount: 110, color: "bg-lime-600", text: "text-lime-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 50, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "帶有魔爪獨特酸甜氣泡，氣泡水拉低甜度後更加順口，勁爽十足。",
+                steps: [
+                    "高球杯加滿冰塊。",
+                    "倒入 40 ml 威士忌。",
+                    "加入 110 ml 魔爪能量飲與 50 ml 氣泡水。",
+                    "輕輕提拉冰塊一次攪拌均勻。"
+                ]
+            },
+            {
+                id: 12,
+                name: "綠魔爪蘭姆特調",
+                enName: "Monster Rum Splash",
+                base: "rum",
+                tags: ["蘭姆酒", "魔爪能量飲", "派對"],
+                icon: "fa-skull",
+                color: "#65a30d",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 40, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "魔爪能量飲 (Monster)", amount: 160, color: "bg-lime-600", text: "text-lime-300" }
+                ],
+                flavor: "魔爪熱帶水果風味搭配甘蔗酒香，爆發力十足且酸甜帶勁。",
+                steps: [
+                    "杯中裝滿冰塊。",
+                    "注入 40 ml 蘭姆酒。",
+                    "補滿 160 ml 魔爪能量飲。",
+                    "稍微攪拌即可開飲！"
+                ]
+            },
+            {
+                id: 13,
+                name: "君度魔爪氣泡",
+                enName: "Cointreau Monster Fizz",
+                base: "cointreau",
+                tags: ["君度橙酒", "魔爪能量飲", "氣泡水"],
+                icon: "fa-cubes-stacked",
+                color: "#f97316",
+                ingredients: [
+                    { name: "君度橙酒 (Cointreau)", amount: 30, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "魔爪能量飲 (Monster)", amount: 100, color: "bg-lime-600", text: "text-lime-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 70, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "甜橙皮香與能量飲料氣泡衝撞，酸甜醒腦且不過於甜膩。",
+                steps: [
+                    "杯中加入大冰塊。",
+                    "倒入 30 ml 君度橙酒。",
+                    "注入 100 ml 魔爪與 70 ml 氣泡水。",
+                    "輕柔攪拌均勻享用。"
+                ]
+            },
+            {
+                id: 14,
+                name: "三重奏黑金可樂",
+                enName: "Trio Black Coke",
+                base: "rum",
+                tags: ["蘭姆酒", "威士忌", "可樂"],
+                icon: "fa-gem",
+                color: "#78350f",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 25, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "威士忌 (Whisky)", amount: 25, color: "bg-amber-800", text: "text-amber-300" },
+                    { name: "可樂 (Coke)", amount: 150, color: "bg-stone-800", text: "text-amber-200" }
+                ],
+                flavor: "雙基酒重磅疊加，酒感濃郁，甘蔗甜香與橡木桶焦糖層次豐富。",
+                steps: [
+                    "準備放入滿滿冰塊的高球杯。",
+                    "依序加入 25 ml 蘭姆酒與 25 ml 威士忌。",
+                    "注入 150 ml 可樂。",
+                    "順時針輕輕攪拌數下。"
+                ]
+            },
+            {
+                id: 15,
+                name: "橙香蔓越莓烏龍",
+                enName: "Orange Cranberry Oolong",
+                base: "cointreau",
+                tags: ["君度橙酒", "蔓越莓汁", "烏龍茶"],
+                icon: "fa-glass-water",
+                color: "#c026d3",
+                ingredients: [
+                    { name: "君度橙酒 (Cointreau)", amount: 30, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "蔓越莓汁 (Cranberry)", amount: 70, color: "bg-rose-700", text: "text-rose-300" },
+                    { name: "烏龍茶 (Oolong Tea)", amount: 100, color: "bg-emerald-800", text: "text-emerald-300" }
+                ],
+                flavor: "果香酸甜與焙火茶感完美結合，帶有極佳的清爽解膩口感。",
+                steps: [
+                    "杯中放入冰塊。",
+                    "加入 30 ml 君度橙酒與 70 ml 蔓越莓汁。",
+                    "補滿 100 ml 烏龍茶。",
+                    "充分攪拌混勻。"
+                ]
+            },
+            {
+                id: 16,
+                name: "君度雙茶微醺",
+                enName: "Cointreau Double Tea",
+                base: "cointreau",
+                tags: ["君度橙酒", "茉莉花茶", "烏龍茶"],
+                icon: "fa-layer-group",
+                color: "#059669",
+                ingredients: [
+                    { name: "君度橙酒 (Cointreau)", amount: 40, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "茉莉花茶 (Jasmine)", amount: 80, color: "bg-teal-700", text: "text-teal-300" },
+                    { name: "烏龍茶 (Oolong Tea)", amount: 80, color: "bg-emerald-800", text: "text-emerald-300" }
+                ],
+                flavor: "茉莉花香與烏龍焙香雙重茶韻，襯托橙皮甘甜，優雅順口。",
+                steps: [
+                    "在冰杯中注入 40 ml 君度橙酒。",
+                    "倒入 80 ml 茉莉花茶與 80 ml 烏龍茶。",
+                    "輕輕攪拌，享受複方茶香與酒香。"
+                ]
+            },
+            {
+                id: 17,
+                name: "威士忌蔓越莓 Highball",
+                enName: "Whisky Cranberry Highball",
+                base: "whisky",
+                tags: ["威士忌", "蔓越莓汁", "氣泡水"],
+                icon: "fa-champagne-glasses",
+                color: "#be123c",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 40, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "蔓越莓汁 (Cranberry)", amount: 60, color: "bg-rose-700", text: "text-rose-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 100, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "微微果酸與清脆氣泡相輔相成，柔化威士忌的酒勁與辛香。",
+                steps: [
+                    "杯中加滿冰塊。",
+                    "倒入 40 ml 威士忌與 60 ml 蔓越莓汁。",
+                    "沿杯壁注入 100 ml 氣泡水。",
+                    "提拉冰塊混勻即可。"
+                ]
+            },
+            {
+                id: 18,
+                name: "茉莉可樂蘭姆",
+                enName: "Jasmine Rum Coke",
+                base: "rum",
+                tags: ["蘭姆酒", "茉莉花茶", "可樂"],
+                icon: "fa-whiskey-glass",
+                color: "#a16207",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 40, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "茉莉花茶 (Jasmine)", amount: 60, color: "bg-teal-700", text: "text-teal-300" },
+                    { name: "可樂 (Coke)", amount: 100, color: "bg-stone-800", text: "text-amber-200" }
+                ],
+                flavor: "可樂甜味中透出清新茉莉花茶香，減低黏膩感，輕盈好喝。",
+                steps: [
+                    "冰杯後倒入 40 ml 蘭姆酒。",
+                    "加入 60 ml 茉莉花茶混勻。",
+                    "緩緩補上 100 ml 可樂。",
+                    "輕輕攪拌一次。"
+                ]
+            },
+            {
+                id: 19,
+                name: "綠宴魔爪蔓越莓",
+                enName: "Monster Cranberry Punch",
+                base: "cointreau",
+                tags: ["蘭姆酒", "君度橙酒", "魔爪能量飲", "蔓越莓汁"],
+                icon: "fa-wand-magic-sparkles",
+                color: "#e11d48",
+                ingredients: [
+                    { name: "蘭姆酒 (Rum)", amount: 30, color: "bg-amber-600", text: "text-amber-400" },
+                    { name: "君度橙酒 (Cointreau)", amount: 20, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "魔爪能量飲 (Monster)", amount: 80, color: "bg-lime-600", text: "text-lime-300" },
+                    { name: "蔓越莓汁 (Cranberry)", amount: 70, color: "bg-rose-700", text: "text-rose-300" }
+                ],
+                flavor: "能量飲料與蔓越莓交織出絢麗寶石色澤，果香濃郁爆汁。",
+                steps: [
+                    "杯中加滿大冰塊。",
+                    "加入蘭姆酒 30 ml 與君度橙酒 20 ml。",
+                    "倒入魔爪 80 ml 與蔓越莓汁 70 ml。",
+                    "攪拌均勻呈現迷人漸層。"
+                ]
+            },
+            {
+                id: 20,
+                name: "威士忌君度氣泡特調",
+                enName: "Whisky Cointreau Spritz",
+                base: "whisky",
+                tags: ["威士忌", "君度橙酒", "氣泡水"],
+                icon: "fa-glass-water-droplet",
+                color: "#ea580c",
+                ingredients: [
+                    { name: "威士忌 (Whisky)", amount: 30, color: "bg-amber-700", text: "text-amber-400" },
+                    { name: "君度橙酒 (Cointreau)", amount: 30, color: "bg-orange-500", text: "text-orange-300" },
+                    { name: "氣泡水 (Soda Water)", amount: 140, color: "bg-cyan-600", text: "text-cyan-300" }
+                ],
+                flavor: "高雅經典風格，橙香完美引出威士忌溫潤麥芽味，氣泡感十足。",
+                steps: [
+                    "杯中裝滿冰塊。",
+                    "倒入 30 ml 威士忌與 30 ml 君度橙酒。",
+                    "注入 140 ml 氣泡水。",
+                    "輕輕上下拉提冰塊均勻融合。"
+                ]
+            }
+        ];
+
+        let currentCocktailId = 1;
+        let currentFilter = 'all';
+
+        // Render Cocktail Buttons
+        function renderButtons() {
+            const container = document.getElementById('buttons-grid');
+            container.innerHTML = '';
+
+            const filtered = cocktails.filter(c => {
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'rum') return c.base === 'rum' || c.ingredients.some(i => i.name.includes('蘭姆酒'));
+                if (currentFilter === 'whisky') return c.base === 'whisky' || c.ingredients.some(i => i.name.includes('威士忌'));
+                if (currentFilter === 'cointreau') return c.base === 'cointreau' || c.ingredients.some(i => i.name.includes('君度'));
+                if (currentFilter === 'monster') return c.ingredients.some(i => i.name.includes('魔爪'));
+                return true;
+            });
+
+            filtered.forEach(cocktail => {
+                const isActive = cocktail.id === currentCocktailId;
+                const button = document.createElement('button');
+                button.className = `w-full text-left p-3.5 rounded-xl transition-all duration-200 border flex items-center justify-between group ${
+                    isActive 
+                    ? 'active-btn border-amber-400' 
+                    : 'glass-card hover:border-slate-500 text-slate-200 hover:bg-slate-800/90'
+                }`;
+                button.onclick = () => selectCocktail(cocktail.id);
+
+                button.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-amber-400 border border-slate-700'}">
+                            <i class="fa-solid ${cocktail.icon} text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm leading-snug">${cocktail.id}. ${cocktail.name}</div>
+                            <div class="text-[11px] ${isActive ? 'text-amber-100' : 'text-slate-400'}">${cocktail.enName}</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-50 group-hover:translate-x-1 transition-transform"></i>
+                `;
+                container.appendChild(button);
+            });
+        }
+
+        // Filter Cocktails
+        function filterCocktails(filter) {
+            currentFilter = filter;
+            
+            // Update filter button styles
+            document.querySelectorAll('#filter-container button').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-800', 'text-amber-400', 'border-amber-500/30');
+                btn.classList.add('bg-slate-800', 'text-slate-400', 'border-slate-700');
+            });
+
+            event.target.classList.add('active', 'text-amber-400', 'border-amber-500/30');
+            renderButtons();
+        }
+
+        // Select Cocktail and Render Detail
+        function selectCocktail(id) {
+            currentCocktailId = id;
+            renderButtons();
+            renderRecipe();
+        }
+
+        // Render Recipe Detail Card
+        function renderRecipe() {
+            const cocktail = cocktails.find(c => c.id === currentCocktailId);
+            const container = document.getElementById('recipe-card');
+
+            if (!cocktail) return;
+
+            // Generate Proportion Bars
+            const proportionBars = cocktail.ingredients.map(ing => {
+                const percentage = (ing.amount / 200) * 100;
+                return `
+                    <div class="${ing.color} h-full transition-all duration-500" style="width: ${percentage}%" title="${ing.name}: ${ing.amount}ml (${percentage}%)"></div>
+                `;
+            }).join('');
+
+            // Generate Ingredients List
+            const ingredientsList = cocktail.ingredients.map(ing => `
+                <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-3 h-3 rounded-full ${ing.color}"></div>
+                        <span class="text-sm font-medium text-slate-200">${ing.name}</span>
+                    </div>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-base font-bold ${ing.text}">${ing.amount}</span>
+                        <span class="text-xs text-slate-400">ml</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Generate Steps List
+            const stepsList = cocktail.steps.map((step, idx) => `
+                <li class="flex items-start gap-3 text-sm text-slate-300">
+                    <span class="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs flex items-center justify-center font-bold">${idx + 1}</span>
+                    <span class="mt-0.5">${step}</span>
+                </li>
+            `).join('');
+
+            container.innerHTML = `
+                <!-- Header -->
+                <div class="flex justify-between items-start pb-4 border-b border-slate-700/60">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">No. ${cocktail.id}</span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">總容量 200 ml</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white tracking-wide">${cocktail.name}</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">${cocktail.enName}</p>
+                    </div>
+                    <button onclick="copyRecipe('${cocktail.name}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 transition-colors">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>複製配方</span>
+                    </button>
+                </div>
+
+                <!-- Proportion Bar -->
+                <div class="my-5">
+                    <div class="flex justify-between text-xs text-slate-400 mb-1.5">
+                        <span>容量視覺比例</span>
+                        <span class="font-mono text-amber-400">200 ml</span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden flex p-0.5 gap-0.5 border border-slate-700/80">
+                        ${proportionBars}
+                    </div>
+                </div>
+
+                <!-- Flavor Profile -->
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3.5 mb-5 flex items-start gap-3">
+                    <i class="fa-solid fa-quote-left text-amber-400/60 text-lg mt-0.5"></i>
+                    <p class="text-sm text-amber-200/90 leading-relaxed">${cocktail.flavor}</p>
+                </div>
+
+                <!-- Ingredients Section -->
+                <div class="mb-5">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-flask text-amber-400"></i> 調配比例 (總量 200ml)
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${ingredientsList}
+                    </div>
+                </div>
+
+                <!-- Simple Mix Steps -->
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-glass-water text-amber-400"></i> 調製步驟
+                    </h3>
+                    <ul class="space-y-2.5 bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+                        ${stepsList}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Copy recipe to clipboard
+        function copyRecipe(name) {
+            const cocktail = cocktails.find(c => c.name === name);
+            if (!cocktail) return;
+
+            let text = `【${cocktail.name} (${cocktail.enName})】調酒配方 (容量: 200ml)\n`;
+            cocktail.ingredients.forEach(i => {
+                text += `• ${i.name}: ${i.amount}ml\n`;
+            });
+            text += `風味：${cocktail.flavor}`;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast(`已複製「${cocktail.name}」配方至剪貼簿！`);
+        }
+
+        // Notification Toast
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-amber-500 text-slate-950 px-4 py-2.5 rounded-xl font-medium shadow-lg z-50 transition-all duration-300 transform translate-y-2 opacity-0 flex items-center gap-2 text-sm';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 2500);
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            renderButtons();
+            renderRecipe();
+        };
+    </script>
+</body>
+</html>
